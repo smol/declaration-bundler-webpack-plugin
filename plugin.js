@@ -52,7 +52,7 @@ var DeclarationBundlerPlugin = (function () {
                 excludeLine = excludeLine || line.indexOf("export =") !== -1;
                 //exclude import statements
                 excludeLine = excludeLine || (/import ([a-z0-9A-Z_-]+) = require\(/).test(line);
-                excludeLine = excludeLine || (/import ([\{A-Za-z0-9 ,\}]+) from '\.+\/.+/).test(line);
+                excludeLine = excludeLine || (/import ([\{A-Za-z0-9 ,\}]+)/).test(line);
                 
                 //if defined, check for excluded references
                 if (!excludeLine && this.excludedReferences && line.indexOf("<reference") !== -1) {
