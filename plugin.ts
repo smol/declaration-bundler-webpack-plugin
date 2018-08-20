@@ -20,7 +20,7 @@ class DeclarationBundlerPlugin
 	apply(compiler)
 	{
 		//when the compiler is ready to emit files
-		compiler.plugin('emit', (compilation,callback) =>
+		compiler.hooks.emit.tapAsync('DeclarationBundlerPlugin', (compilation,callback) =>
 		{
 			//collect all generated declaration files
 			//and remove them from the assets that will be emited
