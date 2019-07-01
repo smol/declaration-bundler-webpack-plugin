@@ -1,4 +1,5 @@
-var DeclarationBundlerPlugin = (function () {
+"use strict";
+var DeclarationBundlerPlugin = /** @class */ (function () {
     function DeclarationBundlerPlugin(options) {
         if (options === void 0) { options = {}; }
         this.out = options.out ? options.out : './build/';
@@ -11,7 +12,7 @@ var DeclarationBundlerPlugin = (function () {
     DeclarationBundlerPlugin.prototype.apply = function (compiler) {
         var _this = this;
         //when the compiler is ready to emit files
-        compiler.plugin('emit', function (compilation, callback) {
+        compiler.hooks.emit.tapAsync('DeclarationBundlerPlugin', function (compilation, callback) {
             //collect all generated declaration files
             //and remove them from the assets that will be emited
             var declarationFiles = {};
@@ -40,7 +41,7 @@ var DeclarationBundlerPlugin = (function () {
         var declarations = '';
         for (var fileName in declarationFiles) {
             var declarationFile = declarationFiles[fileName];
-            console.info(declarationFile.source())
+            // The lines of the files now come as a Function inside declaration file.
             var data = declarationFile.source();
             var lines = data.split("\n");
             var i = lines.length;
@@ -52,8 +53,6 @@ var DeclarationBundlerPlugin = (function () {
                 excludeLine = excludeLine || line.indexOf("export =") !== -1;
                 //exclude import statements
                 excludeLine = excludeLine || (/import ([a-z0-9A-Z_-]+) = require\(/).test(line);
-                excludeLine = excludeLine || (/import ([\{A-Za-z0-9 ,\}]+)/).test(line);
-                
                 //if defined, check for excluded references
                 if (!excludeLine && this.excludedReferences && line.indexOf("<reference") !== -1) {
                     excludeLine = this.excludedReferences.some(function (reference) { return line.indexOf(reference) !== -1; });
@@ -71,9 +70,9 @@ var DeclarationBundlerPlugin = (function () {
             }
             declarations += lines.join("\n") + "\n\n";
         }
-        // var output = "export declare module " + this.moduleName + "\n{\n" + declarations + "}";
-        return declarations;
+        var output = "declare module " + this.moduleName + "\n{\n" + declarations + "}";
+        return output;
     };
     return DeclarationBundlerPlugin;
-})();
+}());
 module.exports = DeclarationBundlerPlugin;
