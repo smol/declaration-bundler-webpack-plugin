@@ -58,8 +58,8 @@ class DeclarationBundlerPlugin
 		for(var fileName in declarationFiles)
 		{
 			var declarationFile = declarationFiles[fileName];
-			var data = declarationFile._value;
-
+			// The lines of the files now come as a Function inside declaration file.
+			var data = declarationFile.source();
 			var lines = data.split("\n");
 			var i = lines.length;
 
